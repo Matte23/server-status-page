@@ -19,24 +19,37 @@
 class Storage
 {
     private $file_name;
+    private $data = [];
 
+    // Set the save file (if using the 'file' storage)
     function set_file_name($name)
     {
         $this->file_name = $name;
     }
 
+    // Add data to the save queue
+    function add_data($name, $data)
+    {
+        $this->data[$name] = $data;
+    }
+
+    // Retrieve data loaded from file
+    function get_data($name)
+    {
+        return $this->data[$name];
+    }
+
     // Save data
-    function save($data, $storage_type)
+    function save($storage_type)
     {
         if ($storage_type == 'file')
-            file_put_contents($this->file_name, serialize($data));
+            file_put_contents($this->file_name, serialize($this->data));
     }
 
     // Load data
     function load($storage_type)
     {
         if ($storage_type == 'file')
-            return unserialize(file_get_contents($this->file_name));
-        return '';
+            $this->data = unserialize(file_get_contents($this->file_name));
     }
 }

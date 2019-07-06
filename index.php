@@ -16,24 +16,28 @@
  *
  */
 
-require_once 'Tester.php';
-require_once 'Storage.php';
-require_once 'Constants.php';
+require_once 'classes/Tester.php';
+require_once 'classes/Storage.php';
+require_once 'classes/Constants.php';
+require_once 'classes/Custom.php';
 
 // Setup autoloading of tests classes
 spl_autoload_register(function ($class_name) {
-    /** @noinspection PhpIncludeInspection */
     require_once 'tests/' . $class_name . '.php';
 });
 
 $config = include 'config.php';
 
+$custom = new Custom();
 $tester = new Tester();
+
+$custom->load_classes();
 $tester->read_config($config[Constants::CONFIG_FILE]);
 
 // Run tests or load results from file / database
 if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_REQUEST) {
-    $tester->execute();
+    $custom->execute();
+    $tester->execute($custom->get_overrides());
 } else if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_CRON) {
     $storage = new Storage();
 
@@ -41,7 +45,10 @@ if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_REQUEST) {
         $storage->set_file_name($config[Constants::FILE_NAME]);
     }
 
-    $tester->set_results($storage->load($config[Constants::STORAGE_TYPE]));
+    $storage->load($config[Constants::STORAGE_TYPE]);
+
+    $custom->load_data($storage);
+    $tester->set_results($storage->get_data('Tests'));
 }
 
 // Generate HTML

@@ -28,6 +28,7 @@
 </div>
 <div class="container">
     <?php $tester->generate_summary_card() ?>
+    <?php $custom->get_cards() ?>
     <hr/>
     <?php $tester->generate_cards() ?>
 </div>

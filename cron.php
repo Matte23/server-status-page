@@ -16,18 +16,19 @@
  *
  */
 
-require_once 'Tester.php';
-require_once 'Storage.php';
-require_once 'Constants.php';
+require_once 'classes/Tester.php';
+require_once 'classes/Storage.php';
+require_once 'classes/Constants.php';
+require_once 'classes/Custom.php';
 
 // Setup autoloading of tests classes
 spl_autoload_register(function ($class_name) {
-    /** @noinspection PhpIncludeInspection */
     require_once 'tests/' . $class_name . '.php';
 });
 
 $config = include 'config.php';
 
+$custom = new Custom();
 $tester = new Tester();
 $storage = new Storage();
 
@@ -35,6 +36,12 @@ if ($config[Constants::STORAGE_TYPE] == Constants::STORAGE_TYPE_FILE) {
     $storage->set_file_name($config[Constants::FILE_NAME]);
 }
 
+$custom->load_classes();
+$custom->execute();
+$custom->save_data($storage);
+
 $tester->read_config($config[Constants::CONFIG_FILE]);
-$tester->execute();
-$storage->save($tester->get_results(), $config[Constants::STORAGE_TYPE]);
+$tester->execute($custom->get_overrides());
+$storage->add_data('Tests', $tester->get_results());
+
+$storage->save($config[Constants::STORAGE_TYPE]);

@@ -28,20 +28,26 @@ class Tester
     }
 
     // Execute tests
-    function execute()
+    function execute($overrides)
     {
         foreach ($this->config->tests as $test) {
             $tester = new $test->type();
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->test_results[$test->name] = $tester::run($test->data);
+
+            if (isset($overrides[$test->name])) {
+                $this->test_results[$test->name] = $overrides[$test->name];
+            } else {
+                $this->test_results[$test->name] = $tester::run($test->data);
+            }
         }
     }
 
+    // Set test results (if loading from storage)
     function set_results($results)
     {
         $this->test_results = $results;
     }
 
+    // Get test results (to save to storage)
     function get_results()
     {
         return $this->test_results;

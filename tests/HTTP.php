@@ -24,7 +24,7 @@ class HTTP
 
         if ($result === FALSE) {
             return Constants::RETURN_ERROR;
-        } else if ($http_response_header[0] == "HTTP/1.1 200 OK") {
+        } else if (strpos($http_response_header[0], '200 OK') !== false) {
             return Constants::RETURN_OK;
         } else {
             return Constants::RETURN_WARNING;

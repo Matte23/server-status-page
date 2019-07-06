@@ -21,6 +21,7 @@ class Constants
     const RETURN_OK = 'ok';
     const RETURN_WARNING = 'warning';
     const RETURN_ERROR = 'error';
+    const RETURN_INFO = 'info';
 
     const SERVER_NAME = 'server_name';
     const CONFIG_FILE = 'config_file';
@@ -37,10 +38,12 @@ class Constants
     const COLOR_LIST = [Constants::RETURN_OK => 'bg-success',
         Constants::RETURN_WARNING => 'bg-warning',
         Constants::RETURN_ERROR => 'bg-danger',
+        Constants::RETURN_INFO => 'bg-primary',
         '' => 'bg-secondary'];
 
     const STATUS_LIST = [Constants::RETURN_OK => 'Operational',
         Constants::RETURN_WARNING => 'Error',
         Constants::RETURN_ERROR => 'Offline',
+        Constants::RETURN_INFO => '',
         '' => 'Unknown'];
 }
