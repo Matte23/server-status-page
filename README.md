@@ -1,6 +1,8 @@
 # Server status page
 A simple, lightweight, modular and automatic server status page.
 
+![Screenshot](/docs/screenshot.png?raw=true)
+
 ## Requirements
 * A web server (Apache, Nginx...)
 * PHP
