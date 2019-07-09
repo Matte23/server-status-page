@@ -41,9 +41,9 @@ class Constants
         Constants::RETURN_INFO => 'bg-primary',
         '' => 'bg-secondary'];
 
-    const STATUS_LIST = [Constants::RETURN_OK => 'Operational',
-        Constants::RETURN_WARNING => 'Error',
-        Constants::RETURN_ERROR => 'Offline',
+    const STATUS_LIST = [Constants::RETURN_OK => 'operational',
+        Constants::RETURN_WARNING => 'issues',
+        Constants::RETURN_ERROR => 'offline',
         Constants::RETURN_INFO => '',
         '' => 'Unknown'];
 }

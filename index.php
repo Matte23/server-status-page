@@ -20,13 +20,18 @@ require_once 'classes/Tester.php';
 require_once 'classes/Storage.php';
 require_once 'classes/Constants.php';
 require_once 'classes/Custom.php';
+require_once 'lang/Languages.php';
 
 // Setup autoloading of tests classes
 spl_autoload_register(function ($class_name) {
     require_once 'tests/' . $class_name . '.php';
 });
 
+// Load config
 $config = include 'config.php';
+
+// Setup translations
+$lang = Languages::setupTranslations(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
 
 $custom = new Custom();
 $tester = new Tester();

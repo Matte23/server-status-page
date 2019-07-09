@@ -57,7 +57,7 @@ class Tester
     {
         $success = 0;
         $color = Constants::COLOR_LIST['error'];
-        $status = 'Server fully unavailable';
+        $status = TRANSLATION['summary-offline'];
 
         foreach ($this->test_results as $test_result) {
             if ($test_result == 'ok')
@@ -66,10 +66,10 @@ class Tester
 
         if ($success < sizeof($this->test_results)) {
             $color = Constants::COLOR_LIST['warning'];
-            $status = 'Server partially operational';
+            $status = TRANSLATION['summary-issues'];
         } else if ($success == sizeof($this->test_results)) {
             $color = Constants::COLOR_LIST['ok'];
-            $status = 'All systems operational';
+            $status = TRANSLATION['summary-operational'];
         }
 
         include 'templates/summary_card.php';
@@ -79,7 +79,7 @@ class Tester
     {
         foreach ($this->config->tests as $test) {
             $color = Constants::COLOR_LIST[@$this->test_results[$test->name]];
-            $status = Constants::STATUS_LIST[@$this->test_results[$test->name]];
+            $status = TRANSLATION[Constants::STATUS_LIST[@$this->test_results[$test->name]]];
 
             include 'templates/status_card.php';
         }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?php echo $lang ?>">
 <head>
-    <title>Server status - <?php echo $config[Constants::SERVER_NAME]; ?></title>
+    <title><?php echo TRANSLATION['server-status']; ?> - <?php echo $config[Constants::SERVER_NAME]; ?></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,7 +24,7 @@
 <body>
 <div id="header" class="jumbotron text-center text-white">
     <h1><?php echo $config[Constants::SERVER_NAME]; ?></h1>
-    <p>Server status page</p>
+    <p><?php echo TRANSLATION['server-status']; ?></p>
 </div>
 <div class="container">
     <?php $tester->generate_summary_card() ?>
