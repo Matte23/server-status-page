@@ -34,9 +34,12 @@ class Tester
             $tester = new $test->type();
 
             if (isset($overrides[$test->name])) {
-                $this->test_results[$test->name] = $overrides[$test->name];
+                $this->test_results[$test->name]['code'] = $overrides[$test->name]['code'];
+                $this->test_results[$test->name]['string'] = $overrides[$test->name]['string'];
             } else {
-                $this->test_results[$test->name] = $tester::run($test->data);
+                $code = $tester::run($test->data);
+                $this->test_results[$test->name]['code'] = $code;
+                $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[$code];
             }
         }
     }
@@ -60,7 +63,7 @@ class Tester
         $status = TRANSLATION['summary-offline'];
 
         foreach ($this->test_results as $test_result) {
-            if ($test_result == 'ok')
+            if ($test_result['code'] == 'ok')
                 $success++;
         }
 
@@ -78,8 +81,8 @@ class Tester
     function generate_cards()
     {
         foreach ($this->config->tests as $test) {
-            $color = Constants::COLOR_LIST[@$this->test_results[$test->name]];
-            $status = TRANSLATION[Constants::STATUS_LIST[@$this->test_results[$test->name]]];
+            $color = Constants::COLOR_LIST[@$this->test_results[$test->name]['code']];
+            $status = TRANSLATION[@$this->test_results[$test->name]['string']];
 
             include 'templates/status_card.php';
         }

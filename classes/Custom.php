@@ -64,7 +64,7 @@ class Custom
         }
     }
 
-    // Get a list of status override
+    // Get a list of status overrides
     function get_overrides()
     {
         $overrides = [];
