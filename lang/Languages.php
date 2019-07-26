@@ -18,7 +18,7 @@
 
 class Languages
 {
-    const acceptLang = ['en', 'it'];
+    const acceptLang = ['en', 'it', 'sk'];
 
     static function setupTranslations($lang)
     {
