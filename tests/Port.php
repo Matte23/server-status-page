@@ -20,10 +20,42 @@ class Port
 {
     static function run($data)
     {
-        $socket = fsockopen($data->ip, $data->port, $errno, $errstr, 10);
+        // Load timeout from configuration or use a default number
+        $timeout = 10;
+        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
+            $timeout = $data->timeout;
+        }
+
+        // Use UDP if requested (default TCP)
+        $prefix = '';
+        if (isset($data->type) && $data->type == 'udp') {
+            $prefix = 'udp://';
+        }
+
+        $socket = fsockopen($prefix . $data->ip, $data->port, $errno, $errstr, $timeout);
 
         if (!$socket)
             return Constants::RETURN_ERROR;
+
+        // With UDP, we also need to send some bytes to check the port status
+        if (isset($data->type) && $data->type == 'udp') {
+            socket_set_timeout($socket, $timeout);
+
+            $write = fwrite($socket, "x00");
+            if (!$write)
+                return Constants::RETURN_ERROR;
+
+            // Read first byte
+            $time_start = time();
+            fread($socket, 1);
+            $time_delta = time() - $time_start;
+
+            // If $time_delta is less than timeout, the host server has returned an ICMP Port unreachable
+            if ($time_delta < $timeout) {
+                fclose($socket);
+                return Constants::RETURN_ERROR;
+            }
+        }
 
         fclose($socket);
 
