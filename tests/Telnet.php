@@ -20,7 +20,13 @@ class Telnet
 {
     static function run($data)
     {
-        $socket = @fsockopen($data->ip, $data->port, $errno, $errstr, 10);
+        // Load timeout from configuration or use a default number
+        $timeout = 1000;
+        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
+            $timeout = $data->timeout;
+        }
+
+        $socket = @fsockopen($data->ip, $data->port, $errno, $errstr, $timeout / 1000);
         $status = Constants::RETURN_OK;
 
         if (!$socket) $status = Constants::RETURN_ERROR;
