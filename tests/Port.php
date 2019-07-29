@@ -21,7 +21,7 @@ class Port
     static function run($data)
     {
         // Load timeout from configuration or use a default number
-        $timeout = 1000;
+        $timeout = 100;
         if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
             $timeout = $data->timeout;
         }
@@ -51,7 +51,7 @@ class Port
             $time_delta = microtime(true) - $time_start;
 
             // If $time_delta is less than timeout, the host server has returned an ICMP Port unreachable
-            if ($time_delta < $timeout / 1000000) {
+            if ($time_delta < $timeout / 1000) {
                 fclose($socket);
                 return Constants::RETURN_ERROR;
             }
