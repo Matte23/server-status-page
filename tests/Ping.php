@@ -20,7 +20,19 @@ class Ping
 {
     static function run($data)
     {
-        exec(sprintf('ping -c 1 -W 5 %s', escapeshellarg($data->ip)), $res, $rval);
+        // Load count from configuration or use a default number
+        $count = 1;
+        if (isset($data->count) && gettype($data->count) == 'integer') {
+            $count = $data->count;
+        }
+
+        // Load timeout from configuration or use a default number
+        $timeout = 5;
+        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
+            $timeout = $data->timeout;
+        }
+
+        exec(sprintf('ping -c %d -W %d %s', $count, $timeout, escapeshellarg($data->ip)), $res, $rval);
 
         if ($rval != 0)
             return Constants::RETURN_ERROR;
