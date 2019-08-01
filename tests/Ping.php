@@ -16,23 +16,18 @@
  *
  */
 
-class Ping
+class Ping extends Test
 {
-    static function run($data)
+    function defaults()
     {
-        // Load count from configuration or use a default number
-        $count = 1;
-        if (isset($data->count) && gettype($data->count) == 'integer') {
-            $count = $data->count;
-        }
+        $this->default[] = Entry::required('ip', 'string');
+        $this->default[] = Entry::optional('count', 'integer', 1);
+        $this->default[] = Entry::optional('timeout', 'integer', 5);
+    }
 
-        // Load timeout from configuration or use a default number
-        $timeout = 5;
-        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
-            $timeout = $data->timeout;
-        }
-
-        exec(sprintf('ping -c %d -W %d %s', $count, $timeout, escapeshellarg($data->ip)), $res, $rval);
+    function run()
+    {
+        exec(sprintf('ping -c %d -W %d %s', $this->configuration->count, $this->configuration->timeout, escapeshellarg($this->configuration->ip)), $res, $rval);
 
         if ($rval != 0)
             return Constants::RETURN_ERROR;

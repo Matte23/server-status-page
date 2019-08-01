@@ -15,6 +15,7 @@
  *    limitations under the License.
  *
  */
+require_once 'classes/Test.php';
 
 class Tester
 {
@@ -31,15 +32,18 @@ class Tester
     function execute($overrides)
     {
         foreach ($this->config->tests as $test) {
-            $tester = new $test->type();
-
             if (isset($overrides[$test->name])) {
                 $this->test_results[$test->name]['code'] = $overrides[$test->name]['code'];
                 $this->test_results[$test->name]['string'] = $overrides[$test->name]['string'];
             } else {
-                $code = $tester::run($test->data);
-                $this->test_results[$test->name]['code'] = $code;
-                $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[$code];
+                $tester = new $test->type();
+                $tester->defaults();
+
+                if ($tester->load_data($test->data)) {
+                    $code = $tester->run();
+                    $this->test_results[$test->name]['code'] = $code;
+                    $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[$code];
+                }
             }
         }
     }

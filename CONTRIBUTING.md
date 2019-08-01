@@ -13,15 +13,27 @@ To create a new test, create a PHP file into the `tests` folder with this templa
 ```php
 <?php
 
-class TestName
+class TestName extends Test
 {
-    static function run($data)
+    // Specify here which configuration entries are required
+    function defaults() {
+        $this->default[] = Entry::required('ip', 'string');
+        $this->default[] = Entry::optional('port', 'integer', 1);
+    }
+        
+    // If the port given in the configuration is 80, the test passes
+    function run()
     {
-        return Constants::RETURN_OK;
+        if ($this->configuration->port == 80) {
+            return Constants::RETURN_OK;  
+        } else {
+            return Constants::RETURN_ERROR;     
+        }
+
     }
 }
 ```
-Then write your test into the run function. The `$data` parameter is an array which contains the test configuration obtained from the .json configuration file. This method should return:
+Then write your test into the run function. The `$this->configuration` field is an object which contains the test configuration obtained from the .json configuration file. This method should return:
 * `Constants::RETURN_OK` if the tests was successful
 * `Constants::RETURN_WARNING` if there were some errors
 * `Constants::RETURN_ERROR` if the test failed

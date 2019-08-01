@@ -16,11 +16,17 @@
  *
  */
 
-class HTTP
+class HTTP extends Test
 {
-    static function run($data)
+
+    function defaults()
     {
-        $result = @file_get_contents($data->url, false);
+        $this->default[] = Entry::required('url', 'string');
+    }
+
+    function run()
+    {
+        $result = @file_get_contents($this->configuration->url, false);
 
         if ($result === FALSE) {
             return Constants::RETURN_ERROR;

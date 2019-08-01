@@ -16,30 +16,32 @@
  *
  */
 
-class Port
+class Port extends Test
 {
-    static function run($data)
+    function defaults()
     {
-        // Load timeout from configuration or use a default number
-        $timeout = 100;
-        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
-            $timeout = $data->timeout;
-        }
+        $this->default[] = Entry::required('ip', 'string');
+        $this->default[] = Entry::required('port', 'integer');
+        $this->default[] = Entry::optional('type', 'string', 'tcp');
+        $this->default[] = Entry::optional('timeout', 'integer', 100);
+    }
 
+    function run()
+    {
         // Use UDP if requested (default TCP)
         $prefix = '';
-        if (isset($data->type) && $data->type == 'udp') {
+        if ($this->configuration->type == 'udp') {
             $prefix = 'udp://';
         }
 
-        $socket = fsockopen($prefix . $data->ip, $data->port, $errno, $errstr, $timeout / 1000);
+        $socket = fsockopen($prefix . $this->configuration->ip, $this->configuration->port, $errno, $errstr, $this->configuration->timeout / 1000);
 
         if (!$socket)
             return Constants::RETURN_ERROR;
 
         // With UDP, we also need to send some bytes to check the port status
-        if (isset($data->type) && $data->type == 'udp') {
-            socket_set_timeout($socket, 0, $timeout * 1000);
+        if ($this->configuration->type == 'udp') {
+            socket_set_timeout($socket, 0, $this->configuration->timeout * 1000);
 
             $write = fwrite($socket, "x00");
             if (!$write)
@@ -51,7 +53,7 @@ class Port
             $time_delta = microtime(true) - $time_start;
 
             // If $time_delta is less than timeout, the host server has returned an ICMP Port unreachable
-            if ($time_delta < $timeout / 1000) {
+            if ($time_delta < $this->configuration->timeout / 1000) {
                 fclose($socket);
                 return Constants::RETURN_ERROR;
             }

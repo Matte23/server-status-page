@@ -16,24 +16,26 @@
  *
  */
 
-class Telnet
+class Telnet extends Test
 {
-    static function run($data)
+    function defaults()
     {
-        // Load timeout from configuration or use a default number
-        $timeout = 1000;
-        if (isset($data->timeout) && gettype($data->timeout) == 'integer') {
-            $timeout = $data->timeout;
-        }
+        $this->default[] = Entry::required('ip', 'string');
+        $this->default[] = Entry::required('port', 'integer');
+        $this->default[] = Entry::required('expected', 'string');
+        $this->default[] = Entry::optional('timeout', 'integer', 1000);
+    }
 
-        $socket = @fsockopen($data->ip, $data->port, $errno, $errstr, $timeout / 1000);
+    function run()
+    {
+        $socket = @fsockopen($this->configuration->ip, $this->configuration->port, $errno, $errstr, $this->configuration->timeout / 1000);
         $status = Constants::RETURN_OK;
 
         if (!$socket) $status = Constants::RETURN_ERROR;
         else {
             $read = fread($socket, 4096);
 
-            if ($read !== $data->expected)
+            if ($read !== $this->configuration->expected)
                 $status = Constants::RETURN_WARNING;
 
             fclose($socket);
