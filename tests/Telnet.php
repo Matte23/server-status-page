@@ -18,12 +18,14 @@
 
 class Telnet extends Test
 {
-    function defaults()
+    static protected $default;
+
+    static function defaults()
     {
-        $this->default[] = Entry::required('ip', 'string');
-        $this->default[] = Entry::required('port', 'integer');
-        $this->default[] = Entry::required('expected', 'string');
-        $this->default[] = Entry::optional('timeout', 'integer', 1000);
+        static::$default[] = Entry::required('ip', 'string');
+        static::$default[] = Entry::required('port', 'integer');
+        static::$default[] = Entry::required('expected', 'string');
+        static::$default[] = Entry::optional('timeout', 'integer', 1000);
     }
 
     function run()

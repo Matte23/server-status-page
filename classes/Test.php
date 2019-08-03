@@ -20,12 +20,30 @@ require_once 'classes/Entry.php';
 
 abstract class Test
 {
-    protected $default;
     protected $configuration;
 
     abstract function run();
 
-    abstract function defaults();
+    abstract static function defaults();
+
+    static function set_defaults($data) {
+        static::load_defaults();
+
+        foreach (static::$default as $index=>$entry) {
+            if (isset($data->{$entry->key})) {
+                if (gettype($data->{$entry->key}) != $entry->type) {
+                    error_log("[" . get_called_class() . "] Type mismatch for entry \"" . $entry->key . "\"" . ": Expected " . $entry->type . ", found " . gettype($data->{$entry->key}) . ". The test may not work properly");
+                }
+                static::$default[$index] = Entry::optional($entry->key, $entry->type, $data->{$entry->key});
+            }
+        }
+    }
+
+    static function load_defaults() {
+        if (static::$default == null) {
+            static::defaults();
+        }
+    }
 
     function load_data($data)
     {
@@ -34,7 +52,7 @@ abstract class Test
             return false;
         }
 
-        foreach ($this->default as $entry) {
+        foreach (static::$default as $entry) {
             if (isset($data->{$entry->key})) {
                 if (gettype($data->{$entry->key}) != $entry->type) {
                     error_log("[" . get_class($this) . "] Type mismatch for entry \"" . $entry->key . "\"" . ": Expected " . $entry->type . ", found " . gettype($data->{$entry->key}) . ". The test may not work properly");

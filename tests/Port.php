@@ -18,12 +18,14 @@
 
 class Port extends Test
 {
-    function defaults()
+    static protected $default;
+
+    static function defaults()
     {
-        $this->default[] = Entry::required('ip', 'string');
-        $this->default[] = Entry::required('port', 'integer');
-        $this->default[] = Entry::optional('type', 'string', 'tcp');
-        $this->default[] = Entry::optional('timeout', 'integer', 100);
+        static::$default[] = Entry::required('ip', 'string');
+        static::$default[] = Entry::required('port', 'integer');
+        static::$default[] = Entry::optional('type', 'string', 'tcp');
+        static::$default[] = Entry::optional('timeout', 'integer', 100);
     }
 
     function run()

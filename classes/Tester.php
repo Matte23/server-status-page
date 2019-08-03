@@ -22,22 +22,34 @@ class Tester
     private $test_results = [];
     private $config;
 
-    // Get test from the config file
+    // Load tests configuration
     function read_config($config_file)
     {
         $this->config = json_decode(file_get_contents($config_file));
     }
 
+    // Load custom default configuration for tests
+    private function load_defaults() {
+        if (isset($this->config->defaults)) {
+            foreach ($this->config->defaults as $test=>$config) {
+                $tester = new $test();
+                $tester::set_defaults($config);
+            }
+        }
+    }
+
     // Execute tests
     function execute($overrides)
     {
+        $this->load_defaults();
+
         foreach ($this->config->tests as $test) {
             if (isset($overrides[$test->name])) {
                 $this->test_results[$test->name]['code'] = $overrides[$test->name]['code'];
                 $this->test_results[$test->name]['string'] = $overrides[$test->name]['string'];
             } else {
                 $tester = new $test->type();
-                $tester->defaults();
+                $tester::load_defaults();
 
                 if ($tester->load_data($test->data)) {
                     $code = $tester->run();

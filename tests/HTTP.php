@@ -18,10 +18,11 @@
 
 class HTTP extends Test
 {
-
-    function defaults()
+    static protected $default;
+    
+    static function defaults()
     {
-        $this->default[] = Entry::required('url', 'string');
+        static::$default[] = Entry::required('url', 'string');
     }
 
     function run()

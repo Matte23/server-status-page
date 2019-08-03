@@ -18,11 +18,13 @@
 
 class Ping extends Test
 {
-    function defaults()
+    static protected $default;
+
+    static function defaults()
     {
-        $this->default[] = Entry::required('ip', 'string');
-        $this->default[] = Entry::optional('count', 'integer', 1);
-        $this->default[] = Entry::optional('timeout', 'integer', 5);
+        static::$default[] = Entry::required('ip', 'string');
+        static::$default[] = Entry::optional('count', 'integer', 1);
+        static::$default[] = Entry::optional('timeout', 'integer', 5);
     }
 
     function run()

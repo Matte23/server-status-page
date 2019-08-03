@@ -18,17 +18,19 @@
 
 class Certificate extends Test
 {
-    function defaults()
+    static protected $default;
+    
+    static function defaults()
     {
-        $this->default[] = Entry::required('host', 'string');
-        $this->default[] = Entry::required('port', 'integer');
+        static::$default[] = Entry::required('host', 'string');
+        static::$default[] = Entry::required('port', 'integer');
 
-        $this->default[] = Entry::optional('verify_peer', 'boolean', true);
-        $this->default[] = Entry::optional('verify_peer_name', 'boolean', true);
-        $this->default[] = Entry::optional('allow_self_signed', 'boolean', false);
+        static::$default[] = Entry::optional('verify_peer', 'boolean', true);
+        static::$default[] = Entry::optional('verify_peer_name', 'boolean', true);
+        static::$default[] = Entry::optional('allow_self_signed', 'boolean', false);
 
-        $this->default[] = Entry::optional('timeout', 'integer', 1);
-        $this->default[] = Entry::optional('days', 'integer', 0);
+        static::$default[] = Entry::optional('timeout', 'integer', 1);
+        static::$default[] = Entry::optional('days', 'integer', 0);
     }
 
     function run()
