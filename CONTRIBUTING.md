@@ -16,11 +16,11 @@ To create a new test, create a PHP file into the `tests` folder with this templa
 class TestName extends Test
 {
     static protected $default;
-    
+
     // Specify here which configuration entries are required
     function defaults() {
-        $this->default[] = Entry::required('ip', 'string');
-        $this->default[] = Entry::optional('port', 'integer', 1);
+        this::$default[] = Entry::required('ip', 'string');
+        this::$default[] = Entry::optional('port', 'integer', 1);
     }
 
     // If the port given in the configuration is 80, the test passes
