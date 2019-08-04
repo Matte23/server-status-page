@@ -41,6 +41,12 @@ class Constants
         Constants::RETURN_INFO => 'bg-primary',
         '' => 'bg-secondary'];
 
+    const TEXT_COLOR_LIST = [Constants::RETURN_OK => 'text-success',
+        Constants::RETURN_WARNING => 'text-warning',
+        Constants::RETURN_ERROR => 'text-danger',
+        Constants::RETURN_INFO => 'text-primary',
+        '' => 'text-secondary'];
+
     const STATUS_LIST = [Constants::RETURN_OK => 'operational',
         Constants::RETURN_WARNING => 'issues',
         Constants::RETURN_ERROR => 'offline',

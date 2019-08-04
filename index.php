@@ -43,6 +43,7 @@ $tester->read_config($config[Constants::CONFIG_FILE]);
 if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_REQUEST) {
     $custom->execute();
     $tester->execute($custom->get_overrides());
+    $require_full_bootstrap = $tester->$require_full_bootstrap;
 } else if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_CRON) {
     $storage = new Storage();
 
@@ -54,6 +55,7 @@ if ($config[Constants::UPDATE_METHOD] == Constants::UPDATE_METHOD_REQUEST) {
 
     $custom->load_data($storage);
     $tester->set_results($storage->get_data('Tests'));
+    $require_full_bootstrap = $storage->get_data('Bootstrap');
 }
 
 // Generate HTML

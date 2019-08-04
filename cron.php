@@ -43,5 +43,6 @@ $custom->save_data($storage);
 $tester->read_config($config[Constants::CONFIG_FILE]);
 $tester->execute($custom->get_overrides());
 $storage->add_data('Tests', $tester->get_results());
+$storage->add_data('Bootstrap', $tester->require_full_bootstrap);
 
 $storage->save($config[Constants::STORAGE_TYPE]);

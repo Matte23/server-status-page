@@ -21,6 +21,7 @@ class Tester
 {
     private $test_results = [];
     private $config;
+    public $require_full_bootstrap = false;
 
     // Load tests configuration
     function read_config($config_file)
@@ -48,13 +49,44 @@ class Tester
                 $this->test_results[$test->name]['code'] = $overrides[$test->name]['code'];
                 $this->test_results[$test->name]['string'] = $overrides[$test->name]['string'];
             } else {
-                $tester = new $test->type();
-                $tester::load_defaults();
+                if (isset($test->tests)) {
+                    $this->require_full_bootstrap = true;
+                    $success = 0;
 
-                if ($tester->load_data($test->data)) {
-                    $code = $tester->run();
-                    $this->test_results[$test->name]['code'] = $code;
-                    $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[$code];
+                    foreach ($test->tests as $nested_test) {
+                        $tester = new $nested_test->type();
+                        $tester::load_defaults();
+
+                        if ($tester->load_data($nested_test->data)) {
+                            $code = $tester->run();
+                            $this->test_results[$test->name][$nested_test->name]['code'] = $code;
+                            $this->test_results[$test->name][$nested_test->name]['string'] = Constants::STATUS_LIST[$code];
+
+                            if($code == Constants::RETURN_OK ) {
+                                $success++;
+                            }
+                        }
+                    }
+
+                    if ($success == 0) {
+                        $this->test_results[$test->name]['code'] = Constants::RETURN_ERROR;
+                        $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[Constants::RETURN_ERROR];
+                    } else if ($success == sizeof($test->tests)) {
+                        $this->test_results[$test->name]['code'] = Constants::RETURN_OK;
+                        $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[Constants::RETURN_OK];
+                    } else {
+                        $this->test_results[$test->name]['code'] = Constants::RETURN_WARNING;
+                        $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[Constants::RETURN_WARNING];
+                    }
+                } else {
+                    $tester = new $test->type();
+                    $tester::load_defaults();
+
+                    if ($tester->load_data($test->data)) {
+                        $code = $tester->run();
+                        $this->test_results[$test->name]['code'] = $code;
+                        $this->test_results[$test->name]['string'] = Constants::STATUS_LIST[$code];
+                    }
                 }
             }
         }
@@ -94,12 +126,27 @@ class Tester
         include 'templates/summary_card.php';
     }
 
+    function generate_nested_cards($parent)
+    {
+        $nested_items = '';
+
+        foreach ($parent->tests as $nested) {
+            $color = Constants::TEXT_COLOR_LIST[@$this->test_results[$parent->name][$nested->name]['code']];
+            $status = TRANSLATION[@$this->test_results[$parent->name][$nested->name]['string']];
+
+            $nested_items .= include 'templates/nested_status_card_item.php';
+        }
+
+        return include 'templates/nested_status_card_group.php';
+    }
+
     function generate_cards()
     {
         foreach ($this->config->tests as $test) {
             $color = Constants::COLOR_LIST[@$this->test_results[$test->name]['code']];
             $status = TRANSLATION[@$this->test_results[$test->name]['string']];
 
+            $nested_group = (isset($test->tests)) ? $this->generate_nested_cards($test) : '';
             include 'templates/status_card.php';
         }
     }
